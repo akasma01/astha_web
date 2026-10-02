@@ -40,7 +40,10 @@ button, a, select, input {
   background: #94a3b8;
 }
 
-/* Safe Area Inset Support for Mobile Notch & Home Indicator */
+/* Safe Area Inset Support for Mobile Notch & Status Bar & Home Indicator */
+.safe-top-header {
+  padding-top: max(0.85rem, env(safe-area-inset-top));
+}
 .safe-bottom {
   padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
 }

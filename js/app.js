@@ -206,6 +206,7 @@ function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState('32ft-mxl');
+  const [showWhatsApp, setShowWhatsApp] = useState(true);
 
   // Video Loading & Jitter-Free Playback State
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
@@ -230,20 +231,20 @@ function App() {
       }
     };
 
-    // If media already buffered (from browser cache or fast connection)
+    // If media already sufficiently buffered
     if (vid.readyState >= 3) {
       startSmoothPlayback();
     } else {
       vid.addEventListener('canplaythrough', startSmoothPlayback, {
         once: true
       });
-      vid.addEventListener('loadeddata', startSmoothPlayback, {
+      vid.addEventListener('canplay', startSmoothPlayback, {
         once: true
       });
     }
     return () => {
       vid.removeEventListener('canplaythrough', startSmoothPlayback);
-      vid.removeEventListener('loadeddata', startSmoothPlayback);
+      vid.removeEventListener('canplay', startSmoothPlayback);
     };
   }, []);
 
@@ -339,9 +340,9 @@ function App() {
     }
   };
   return /*#__PURE__*/React.createElement("div", {
-    className: "min-h-screen bg-white text-slate-800 font-sans antialiased selection:bg-blue-100 selection:text-blue-900 pb-24 md:pb-0 relative overflow-x-hidden w-full"
+    className: "min-h-screen bg-white text-slate-800 font-sans antialiased selection:bg-blue-100 selection:text-blue-900 pb-0 relative overflow-x-hidden w-full"
   }, /*#__PURE__*/React.createElement("header", {
-    className: `fixed top-0 inset-x-0 z-50 transition-all duration-300 w-full ${isScrolled ? 'bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs text-slate-900 py-2.5 sm:py-3.5' : 'bg-slate-950/70 backdrop-blur-md border-b border-white/10 text-white py-3 sm:py-4'}`
+    className: `fixed top-0 inset-x-0 z-50 transition-all duration-300 w-full safe-top-header ${isScrolled ? 'bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs text-slate-900 py-2.5 sm:py-3.5' : 'bg-slate-950/75 backdrop-blur-md border-b border-white/10 text-white py-3.5 sm:py-4.5'}`
   }, /*#__PURE__*/React.createElement("div", {
     className: "w-full max-w-wide mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 flex items-center justify-between"
   }, /*#__PURE__*/React.createElement("a", {
@@ -350,11 +351,11 @@ function App() {
       e.preventDefault();
       scrollToSection('cover');
     },
-    className: "flex items-center gap-2.5 sm:gap-3.5 group shrink min-w-0"
+    className: "flex items-center gap-2.5 sm:gap-3.5 group shrink min-w-0 pt-1 sm:pt-0"
   }, /*#__PURE__*/React.createElement("img", {
     src: "assets/images/as logo.png",
     alt: "Astha Road Services Logo",
-    className: "h-8 sm:h-11 w-auto object-contain shrink-0 transition-transform duration-300 group-hover:scale-105"
+    className: "h-9 sm:h-12 w-auto object-contain shrink-0 transition-transform duration-300 group-hover:scale-105"
   }), /*#__PURE__*/React.createElement("div", {
     className: "min-w-0"
   }, /*#__PURE__*/React.createElement("span", {
@@ -484,11 +485,7 @@ function App() {
     className: "text-[10px] sm:text-xs font-bold tracking-[0.15em] sm:tracking-[0.2em] text-blue-400 uppercase font-mono"
   }, "Pan-India Commercial Fleet Operations")), /*#__PURE__*/React.createElement("h1", {
     className: "text-2xl xs:text-3xl sm:text-6xl md:text-7xl font-extrabold tracking-tight sm:tracking-[0.035em] text-white leading-tight sm:leading-[1.1] font-heading drop-shadow-md"
-  }, "ASTHA ROAD SERVICES"), /*#__PURE__*/React.createElement("p", {
-    className: "sm:hidden text-xs text-slate-200 font-medium leading-relaxed"
-  }, "Surat to Pan-India Full Truckload Logistics \u2022 550+ Commercial Fleet"), /*#__PURE__*/React.createElement("p", {
-    className: "hidden sm:block text-base md:text-lg text-slate-200 leading-relaxed font-normal max-w-2xl"
-  }, "Direct Full Truckload (FTL) Freight Across All Indian States \u2022 Operating 550+ GPS Monitored Commercial Trucks & Trailers \u2022 Surat Central Logistics Hub"), /*#__PURE__*/React.createElement("div", {
+  }, "ASTHA ROAD SERVICES"), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3 pt-1 sm:pt-2 w-full sm:w-auto"
   }, /*#__PURE__*/React.createElement("button", {
     onClick: () => scrollToSection('estimator'),
@@ -1329,40 +1326,42 @@ function App() {
     className: "text-xs text-slate-500 text-center md:text-right"
   }, /*#__PURE__*/React.createElement("div", null, "\xA9 ", new Date().getFullYear(), " Astha Road Services. All Rights Reserved."), /*#__PURE__*/React.createElement("div", {
     className: "mt-0.5"
-  }, "Surat to Pan-India Full Truckload Logistics \u2022 100% GPS Monitored")))), /*#__PURE__*/React.createElement("div", {
-    className: "md:hidden fixed bottom-0 inset-x-0 z-40 p-2.5 bg-slate-950/95 backdrop-blur-md border-t border-slate-800 shadow-2xl safe-bottom"
+  }, "Surat to Pan-India Full Truckload Logistics \u2022 100% GPS Monitored")))), showWhatsApp && /*#__PURE__*/React.createElement("div", {
+    className: "fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 group"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-3 gap-2 text-xs font-semibold text-center"
-  }, /*#__PURE__*/React.createElement("a", {
-    href: "tel:9913885099",
-    className: "py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center gap-1.5 active:scale-95 transition-transform border border-white/10"
+    className: "relative flex items-center justify-center"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: e => {
+      e.preventDefault();
+      e.stopPropagation();
+      setShowWhatsApp(false);
+    },
+    title: "Dismiss WhatsApp icon",
+    "aria-label": "Close WhatsApp Button",
+    className: "absolute -top-1.5 -right-1.5 z-50 w-5 h-5 rounded-full bg-slate-900 hover:bg-slate-950 text-white flex items-center justify-center border border-white shadow-md active:scale-90 transition-transform cursor-pointer"
   }, /*#__PURE__*/React.createElement("svg", {
-    className: "w-3.5 h-3.5 fill-current",
-    viewBox: "0 0 24 24"
-  }, /*#__PURE__*/React.createElement("path", {
-    d: "M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
-  })), /*#__PURE__*/React.createElement("span", null, "Call")), /*#__PURE__*/React.createElement("a", {
-    href: "https://wa.me/919913885099?text=Hello%20Astha%20Road%20Services,%20I%20need%20transport.",
-    target: "_blank",
-    rel: "noopener",
-    className: "py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center gap-1.5 active:scale-95 transition-transform shadow-md shadow-emerald-900/30"
-  }, /*#__PURE__*/React.createElement("svg", {
-    className: "w-3.5 h-3.5 fill-current",
-    viewBox: "0 0 24 24"
-  }, /*#__PURE__*/React.createElement("path", {
-    d: "M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2ZM12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.8 7.37 7.5 3.67 12.04 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15ZM16.56 14.37C16.31 14.25 15.09 13.65 14.86 13.56C14.63 13.48 14.47 13.44 14.3 13.68C14.14 13.93 13.67 14.49 13.53 14.65C13.39 14.81 13.24 14.83 12.99 14.71C12.75 14.59 11.96 14.33 11.02 13.49C10.29 12.84 9.8 12.03 9.65 11.78C9.51 11.54 9.64 11.4 9.76 11.28C9.87 11.17 10.01 10.99 10.13 10.84C10.26 10.7 10.3 10.59 10.38 10.43C10.46 10.26 10.42 10.12 10.36 10C10.3 9.88 9.81 8.68 9.61 8.18C9.41 7.69 9.21 7.76 9.06 7.75C8.92 7.74 8.76 7.74 8.59 7.74C8.43 7.74 8.16 7.8 7.94 8.05C7.71 8.29 7.08 8.88 7.08 10.09C7.08 11.3 7.96 12.47 8.08 12.63C8.21 12.8 9.81 15.28 12.27 16.34C12.86 16.59 13.31 16.74 13.67 16.86C14.26 17.05 14.8 17.02 15.22 16.96C15.69 16.89 16.66 16.37 16.86 15.79C17.07 15.22 17.07 14.73 17.01 14.63C16.95 14.52 16.81 14.49 16.56 14.37Z"
-  })), /*#__PURE__*/React.createElement("span", null, "WhatsApp")), /*#__PURE__*/React.createElement("button", {
-    onClick: () => scrollToSection('estimator'),
-    className: "py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center gap-1.5 active:scale-95 transition-transform shadow-md shadow-blue-900/30"
-  }, /*#__PURE__*/React.createElement("svg", {
-    className: "w-3.5 h-3.5 fill-none stroke-current",
+    className: "w-2.5 h-2.5 stroke-current",
+    fill: "none",
     viewBox: "0 0 24 24",
-    strokeWidth: "2"
+    strokeWidth: "3"
   }, /*#__PURE__*/React.createElement("path", {
     strokeLinecap: "round",
     strokeLinejoin: "round",
-    d: "M13 10V3L4 14h7v7l9-11h-7z"
-  })), /*#__PURE__*/React.createElement("span", null, "Quote")))));
+    d: "M6 18L18 6M6 6l12 12"
+  }))), /*#__PURE__*/React.createElement("a", {
+    href: "https://wa.me/919913885099?text=Hello%20Astha%20Road%20Services,%20I%20need%20transport%20rates.",
+    target: "_blank",
+    rel: "noopener",
+    title: "Chat with Astha Road Services on WhatsApp",
+    "aria-label": "Chat on WhatsApp",
+    className: "w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white flex items-center justify-center shadow-lg shadow-emerald-900/30 hover:shadow-emerald-900/50 hover:scale-105 active:scale-95 transition-all duration-200"
+  }, /*#__PURE__*/React.createElement("svg", {
+    className: "w-7 h-7 sm:w-8 sm:h-8 fill-current",
+    viewBox: "0 0 24 24"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2ZM12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.8 7.37 7.5 3.67 12.04 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15ZM16.56 14.37C16.31 14.25 15.09 13.65 14.86 13.56C14.63 13.48 14.47 13.44 14.3 13.68C14.14 13.93 13.67 14.49 13.53 14.65C13.39 14.81 13.24 14.83 12.99 14.71C12.75 14.59 11.96 14.33 11.02 13.49C10.29 12.84 9.8 12.03 9.65 11.78C9.51 11.54 9.64 11.4 9.76 11.28C9.87 11.17 10.01 10.99 10.13 10.84C10.26 10.7 10.3 10.59 10.38 10.43C10.46 10.26 10.42 10.12 10.36 10C10.3 9.88 9.81 8.68 9.61 8.18C9.41 7.69 9.21 7.76 9.06 7.75C8.92 7.74 8.76 7.74 8.59 7.74C8.43 7.74 8.16 7.8 7.94 8.05C7.71 8.29 7.08 8.88 7.08 10.09C7.08 11.3 7.96 12.47 8.08 12.63C8.21 12.8 9.81 15.28 12.27 16.34C12.86 16.59 13.31 16.74 13.67 16.86C14.26 17.05 14.8 17.02 15.22 16.96C15.69 16.89 16.66 16.37 16.86 15.79C17.07 15.22 17.07 14.73 17.01 14.63C16.95 14.52 16.81 14.49 16.56 14.37Z"
+  }))))));
 }
 
 // Mount React App
