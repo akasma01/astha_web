@@ -207,17 +207,44 @@ function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState('32ft-mxl');
 
-  // Video Autoplay Reference
+  // Video Loading & Jitter-Free Playback State
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const truckVideoRef = useRef(null);
 
-  // Smooth Continuous Video Playback
+  // Buffer video first, then play smoothly with zero jitter
   useEffect(() => {
     const vid = truckVideoRef.current;
-    if (vid) {
-      vid.muted = true;
-      vid.playsInline = true;
-      vid.play().catch(() => {});
+    if (!vid) return;
+    vid.muted = true;
+    vid.playsInline = true;
+    const startSmoothPlayback = () => {
+      const playPromise = vid.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          setIsVideoLoaded(true);
+        }).catch(() => {
+          setIsVideoLoaded(true);
+        });
+      } else {
+        setIsVideoLoaded(true);
+      }
+    };
+
+    // If media already buffered (from browser cache or fast connection)
+    if (vid.readyState >= 3) {
+      startSmoothPlayback();
+    } else {
+      vid.addEventListener('canplaythrough', startSmoothPlayback, {
+        once: true
+      });
+      vid.addEventListener('loadeddata', startSmoothPlayback, {
+        once: true
+      });
     }
+    return () => {
+      vid.removeEventListener('canplaythrough', startSmoothPlayback);
+      vid.removeEventListener('loadeddata', startSmoothPlayback);
+    };
   }, []);
 
   // Calculator State
@@ -419,18 +446,20 @@ function App() {
     className: "py-2.5 px-3 rounded-lg bg-blue-600 text-white text-center text-xs font-semibold shadow-sm"
   }, "Freight Estimate")))), /*#__PURE__*/React.createElement("section", {
     id: "cover",
-    className: "relative w-full min-h-[85vh] sm:min-h-screen flex flex-col justify-between overflow-hidden bg-slate-950 text-white pt-20 sm:pt-32 pb-6 sm:pb-12"
+    className: "relative w-full min-h-[90vh] sm:min-h-screen flex flex-col justify-end sm:justify-center overflow-hidden bg-slate-950 text-white pt-20 sm:pt-28 pb-8 sm:pb-16"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "absolute inset-0 z-0 overflow-hidden"
-  }, /*#__PURE__*/React.createElement("video", {
+    className: "absolute inset-0 z-0 overflow-hidden bg-slate-950"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "assets/images/astha-cover-poster.jpg",
+    alt: "Astha Road Services Commercial Fleet",
+    className: "absolute inset-0 w-full h-full object-cover object-center"
+  }), /*#__PURE__*/React.createElement("video", {
     ref: truckVideoRef,
-    autoPlay: true,
     loop: true,
     muted: true,
     playsInline: true,
     preload: "auto",
-    poster: "assets/images/astha-cover-poster.jpg",
-    className: "absolute inset-0 w-full h-full object-cover",
+    className: `absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ease-out ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`,
     style: {
       transform: 'scale(1.01)'
     }
@@ -438,45 +467,40 @@ function App() {
     src: "assets/videos/astha-cover-video.mp4",
     type: "video/mp4"
   })), /*#__PURE__*/React.createElement("div", {
-    className: "absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/50 to-slate-950/70 pointer-events-none"
+    className: "sm:hidden absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/30 to-transparent pointer-events-none"
   }), /*#__PURE__*/React.createElement("div", {
-    className: "absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent pointer-events-none w-full md:w-3/5"
+    className: "hidden sm:block absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-slate-950/60 pointer-events-none"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "hidden sm:block absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-transparent pointer-events-none w-full md:w-3/5"
   })), /*#__PURE__*/React.createElement("div", {
-    className: "relative z-20 w-full max-w-wide mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 my-auto text-left py-6 sm:py-10"
+    className: "relative z-20 w-full max-w-wide mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 text-left"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "max-w-3xl space-y-4 sm:space-y-6"
+    className: "max-w-3xl space-y-3 sm:space-y-6"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-2.5"
+    className: "flex items-center gap-2 sm:gap-2.5"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "h-0.5 w-6 sm:w-8 bg-blue-500 rounded-full"
+    className: "h-0.5 w-5 sm:w-8 bg-blue-500 rounded-full"
   }), /*#__PURE__*/React.createElement("span", {
-    className: "text-[11px] sm:text-xs font-bold tracking-[0.15em] sm:tracking-[0.2em] text-blue-400 uppercase font-mono"
+    className: "text-[10px] sm:text-xs font-bold tracking-[0.15em] sm:tracking-[0.2em] text-blue-400 uppercase font-mono"
   }, "Pan-India Commercial Fleet Operations")), /*#__PURE__*/React.createElement("h1", {
-    className: "text-3xl sm:text-6xl md:text-7xl font-extrabold tracking-tight sm:tracking-[0.035em] text-white leading-[1.15] sm:leading-[1.1] font-heading drop-shadow-md"
+    className: "text-2xl xs:text-3xl sm:text-6xl md:text-7xl font-extrabold tracking-tight sm:tracking-[0.035em] text-white leading-tight sm:leading-[1.1] font-heading drop-shadow-md"
   }, "ASTHA ROAD SERVICES"), /*#__PURE__*/React.createElement("p", {
-    className: "text-sm sm:text-base md:text-lg text-slate-200 leading-relaxed font-normal max-w-2xl"
+    className: "sm:hidden text-xs text-slate-200 font-medium leading-relaxed"
+  }, "Surat to Pan-India Full Truckload Logistics \u2022 550+ Commercial Fleet"), /*#__PURE__*/React.createElement("p", {
+    className: "hidden sm:block text-base md:text-lg text-slate-200 leading-relaxed font-normal max-w-2xl"
   }, "Direct Full Truckload (FTL) Freight Across All Indian States \u2022 Operating 550+ GPS Monitored Commercial Trucks & Trailers \u2022 Surat Central Logistics Hub"), /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 w-full sm:w-auto"
+    className: "grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3 pt-1 sm:pt-2 w-full sm:w-auto"
   }, /*#__PURE__*/React.createElement("button", {
     onClick: () => scrollToSection('estimator'),
-    className: "w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-semibold tracking-wide transition-all duration-200 shadow-lg shadow-blue-600/30 active:scale-95 text-center flex items-center justify-center gap-2"
-  }, /*#__PURE__*/React.createElement("span", null, "Calculate Freight Rate"), /*#__PURE__*/React.createElement("span", null, "\u2192")), /*#__PURE__*/React.createElement("button", {
+    className: "py-3 px-3 sm:px-8 sm:py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-semibold tracking-wide transition-all duration-200 shadow-lg shadow-blue-600/30 active:scale-95 text-center flex items-center justify-center gap-1.5 sm:gap-2"
+  }, /*#__PURE__*/React.createElement("span", null, "Rate Quote"), /*#__PURE__*/React.createElement("span", {
+    className: "hidden xs:inline"
+  }, "\u2192")), /*#__PURE__*/React.createElement("button", {
     onClick: () => scrollToSection('fleet'),
-    className: "w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white text-xs sm:text-sm font-semibold tracking-wide border border-white/20 transition-all duration-200 active:scale-95 text-center flex items-center justify-center gap-2"
-  }, /*#__PURE__*/React.createElement("span", null, "Explore Fleet Specifications"), /*#__PURE__*/React.createElement("span", null, "\u2193"))))), /*#__PURE__*/React.createElement("div", {
-    className: "relative z-20 w-full max-w-wide mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 pt-3 sm:pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-t border-white/10"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "text-xs text-slate-300 flex items-center gap-2"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"
-  }), /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("strong", {
-    className: "text-white font-semibold"
-  }, "Surat Hubs:"), " Madhuram Arcade-2, Dindoli & Parvat Gam")), /*#__PURE__*/React.createElement("button", {
-    onClick: () => scrollToSection('services'),
-    className: "flex items-center gap-1.5 text-xs text-slate-400 hover:text-white font-medium group transition-colors"
-  }, /*#__PURE__*/React.createElement("span", null, "EXPLORE FLEET & SERVICES"), /*#__PURE__*/React.createElement("span", {
-    className: "group-hover:translate-y-0.5 transition-transform text-blue-400"
-  }, "\u2193")))), /*#__PURE__*/React.createElement("section", {
+    className: "py-3 px-3 sm:px-8 sm:py-3.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white text-xs sm:text-sm font-semibold tracking-wide border border-white/20 transition-all duration-200 active:scale-95 text-center flex items-center justify-center gap-1.5 sm:gap-2"
+  }, /*#__PURE__*/React.createElement("span", null, "Fleet Specs"), /*#__PURE__*/React.createElement("span", {
+    className: "hidden xs:inline"
+  }, "\u2193")))))), /*#__PURE__*/React.createElement("section", {
     className: "py-10 sm:py-16 bg-slate-50/70 border-b border-slate-100 w-full"
   }, /*#__PURE__*/React.createElement("div", {
     className: "w-full max-w-wide mx-auto px-4 sm:px-8 lg:px-12 xl:px-16"
